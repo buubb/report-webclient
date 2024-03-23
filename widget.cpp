@@ -1,7 +1,6 @@
 #include "widget.h"
 #include "ui_widget.h"
 #include "qabstractsocket.h"
-#include <QFile>
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
