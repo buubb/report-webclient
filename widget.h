@@ -27,8 +27,6 @@ public slots:
     void doConnected();
     void disConnected();
     void doReadyRead();
-    // void socketStateChanged();
-
 private slots:
     void on_pbConnect_clicked();
 

@@ -1,6 +1,7 @@
 #include "widget.h"
 #include "ui_widget.h"
 #include "qabstractsocket.h"
+#include <QFile>
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -31,8 +32,10 @@ void Widget::disConnected(){
     ui->pteMessage->insertPlainText("Disconnected.\n\n");
 }
 void Widget::doReadyRead(){
-    ui->pteMessage->insertPlainText(socket_.readAll());
-    ui->pteMessage->insertPlainText(socket_2.readAll());
+    if(socket_.state() == QAbstractSocket::ConnectedState)
+        ui->pteMessage->insertPlainText(socket_.readAll());
+    if(socket_2.state() == QAbstractSocket::ConnectedState)
+        ui->pteMessage->insertPlainText(socket_2.readAll());
 }
 
 void Widget::on_pbConnect_clicked()
@@ -53,8 +56,7 @@ void Widget::on_pbConnect_clicked()
 
 void Widget::changeEnable(){
     ui->pbDisconnect->setEnabled(socket_.state() == QAbstractSocket::ConnectedState || socket_2.state() == QAbstractSocket::ConnectedState);
-    ui->pbConnect->setDisabled(socket_.state() == QAbstractSocket::ConnectedState);
-    ui->pbConnect->setDisabled(socket_2.state() == QAbstractSocket::ConnectedState);
+    ui->pbConnect->setDisabled((ui->cbTCP->isChecked() && socket_.state() == QAbstractSocket::ConnectedState) || (ui->cbSSL->isChecked() && socket_2.state() == QAbstractSocket::ConnectedState));
     ui->pbClear->setEnabled(!(ui->pteMessage->toPlainText().isEmpty()));
 }
 
@@ -69,8 +71,10 @@ void Widget::on_pbDisconnect_clicked()
 
 void Widget::on_pbSend_clicked()
 {
-    socket_.write(ui->pteSend->toPlainText().toUtf8());
-    socket_2.write(ui->pteSend->toPlainText().toUtf8());
+    if(socket_.state() == QAbstractSocket::ConnectedState)
+        socket_.write(ui->pteSend->toPlainText().toUtf8());
+    if(socket_2.state() == QAbstractSocket::ConnectedState)
+        socket_2.write(ui->pteSend->toPlainText().toUtf8());
 }
 
 
